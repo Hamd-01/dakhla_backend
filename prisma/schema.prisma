@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+ 
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+model User {
+  id           Int             @id @default(autoincrement())
+  email        String          @unique
+  password     String
+  role         Role            @default(STUDENT)
+  profile      StudentProfile?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  @@map("users")
+}
+model StudentProfile {
+  id                Int      @id @default(autoincrement())
+  userId            Int      @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName         String
+  lastName          String
+  gpa               Float
+  educationLevel    String
+  preferredLocation String?
+  maxBudget         Float?
+  interests         String[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  @@map("student_profiles")
+}
+model University {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  acr         String
+  city        String      
+  website     String?
+  admissionDifficulty       Int
+  expenseRating         Int
+  logoUrl     String?
+  programs    Program[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  @@map("universities")
+}
+
+
+model Tag {
+  id        Int          @id @default(autoincrement())
+  name      String       @unique
+  programs  ProgramTag[]
+  createdAt DateTime     @default(now())
+
+  @@map("tags")
+}
+
+model ProgramTag {
+  programId Int
+  tagId     Int
+
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([programId, tagId])
+
+  @@map("program_tags")
+}
+
+
+model Program {
+  id             Int        @id @default(autoincrement())
+
+  universityId   Int
+  university     University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+
+  name           String
+  degree         String
+  durationYears  Int
+  minaggRequired Float      @default(0.0)
+
+  tags           ProgramTag[]
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@map("programs")
+}
