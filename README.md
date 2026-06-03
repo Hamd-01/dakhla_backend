@@ -24,6 +24,14 @@
 . Look up docs and quick start guides of things you are going to be working on.
 
 
+## AI Workflow:
+Since we are all going to be using ai for development, it is important to create a workflow that ensures that the the main codebase does not get polluted, so the workflow across the different branches is going to be like this:
+
+ai-develop --> develop --> main
+
+all llm generated must be pushed to changed to ai-develop from there on the code will be tested and will be then be pushed to develop where some other changes will be made to the code and then finally the code will be merged with main.
+
+
 ## Prerequisites:
 
 . As node_modules are not included in source so you will have to set up them yourself.
